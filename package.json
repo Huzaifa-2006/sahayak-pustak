@@ -1,0 +1,50 @@
+{
+  "name": "sahayak-pustak",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "tsx scripts/seed.ts"
+  },
+  "dependencies": {
+    "@auth/drizzle-adapter": "^1.1.0",
+    "@hookform/resolvers": "^3.4.2",
+    "@supabase/supabase-js": "^2.43.4",
+    "@types/node": "^20",
+    "@types/pg": "^8.11.6",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.0.1",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.6.1",
+    "drizzle-kit": "^0.21.4",
+    "drizzle-orm": "^0.30.10",
+    "lucide-react": "^0.379.0",
+    "next": "14.2.5",
+    "next-auth": "^4.24.7",
+    "pg": "^8.20.0",
+    "postcss": "^8",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-hook-form": "^7.51.5",
+    "react-hot-toast": "^2.4.1",
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss": "^3.4.1",
+    "tsx": "^4.11.0",
+    "typescript": "^5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.13",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5"
+  }
+}
