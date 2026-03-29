@@ -3,7 +3,7 @@ import {
   pgTable, text, timestamp, integer, boolean,
   pgEnum, uuid, primaryKey, index,
 } from "drizzle-orm/pg-core";
-import type { AdapterAccount } from "next-auth/adapters";
+import type { AdapterAccount } from "@auth/core/adapters";
 
 // ========================
 // Enums
@@ -73,7 +73,7 @@ export const books = pgTable("books", {
   imageUrl:       text("image_url"),
   pickupLocation: text("pickup_location"),
   isDonation:     boolean("is_donation").notNull().default(false),
-  isSold:         boolean("is_sold").notNull().default(false),
+  isSold:         boolean("is_sold").notNull().default(false),   // NEW
   sellerId:       uuid("seller_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   createdAt:      timestamp("created_at").notNull().defaultNow(),
 }, (table) => ({
@@ -101,7 +101,7 @@ export const notes = pgTable("notes", {
 }));
 
 // ========================
-// Orders Table (Razorpay)
+// Orders Table (Stripe)
 // ========================
 export const orders = pgTable("orders", {
   id:       uuid("id").defaultRandom().primaryKey(),
@@ -109,10 +109,10 @@ export const orders = pgTable("orders", {
   buyerId:  uuid("buyer_id").notNull().references(() => users.id),
   sellerId: uuid("seller_id").notNull().references(() => users.id),
 
-  // Razorpay fields
-  razorpayOrderId:   text("razorpay_order_id").unique(),
-  razorpayPaymentId: text("razorpay_payment_id"),
-  razorpaySignature: text("razorpay_signature"),
+  // Stripe fields
+  stripeSessionId:       text("stripe_session_id").unique(),
+  stripePaymentIntentId: text("stripe_payment_intent_id"),
+  stripeRefundId:        text("stripe_refund_id"),
 
   // Amounts stored in paise (₹1 = 100 paise)
   amount:         integer("amount").notNull(),
@@ -172,15 +172,19 @@ export const usersRelations = relations(users, ({ many }) => ({
 export const accountsRelations = relations(accounts, ({ one }) => ({
   user: one(users, { fields: [accounts.userId], references: [users.id] }),
 }));
+
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, { fields: [sessions.userId], references: [users.id] }),
 }));
+
 export const booksRelations = relations(books, ({ one }) => ({
   seller: one(users, { fields: [books.sellerId], references: [users.id] }),
 }));
+
 export const notesRelations = relations(notes, ({ one }) => ({
   uploader: one(users, { fields: [notes.uploaderId], references: [users.id] }),
 }));
+
 export const ordersRelations = relations(orders, ({ one }) => ({
   book:   one(books, { fields: [orders.bookId],   references: [books.id] }),
   buyer:  one(users, { fields: [orders.buyerId],  references: [users.id], relationName: "buyerOrders" }),

@@ -65,3 +65,6 @@ coverage/
 .cache/
 tmp/
 temp/
+.eslintrc.json
+TREE.md
+src/lib/razorpay.ts
