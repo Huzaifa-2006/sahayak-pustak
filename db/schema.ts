@@ -3,7 +3,7 @@ import {
   pgTable, text, timestamp, integer, boolean,
   pgEnum, uuid, primaryKey, index,
 } from "drizzle-orm/pg-core";
-import type { AdapterAccount } from "@auth/core/adapters";
+import type { AdapterAccount } from "auth/core/adapters";
 
 // ========================
 // Enums
