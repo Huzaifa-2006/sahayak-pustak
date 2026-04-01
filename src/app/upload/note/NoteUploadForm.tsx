@@ -39,10 +39,12 @@ export function NoteUploadForm() {
     if (!file) return;
     if (file.type !== "application/pdf") {
       toast.error("Only PDF files are allowed");
+      e.target.value = "";
       return;
     }
     if (file.size > 25 * 1024 * 1024) {
       toast.error("PDF must be under 25MB");
+      e.target.value = "";
       return;
     }
     setPdfFile(file);
@@ -120,9 +122,10 @@ export function NoteUploadForm() {
         </div>
       </div>
 
-      {/* PDF Upload */}
+      {/* PDF Upload — mobile-friendly label approach */}
       <div>
         <label className="label">PDF File *</label>
+
         {pdfFile ? (
           <div className="flex items-center gap-3 rounded-xl border border-purple-200 bg-purple-50 p-4">
             <FileText className="h-8 w-8 text-purple-600 shrink-0" />
@@ -132,27 +135,54 @@ export function NoteUploadForm() {
             </div>
             <button
               type="button"
-              onClick={() => { setPdfFile(null); if (fileRef.current) fileRef.current.value = ""; }}
-              className="text-slate-400 hover:text-red-500 transition-colors"
+              onClick={() => {
+                setPdfFile(null);
+                if (fileRef.current) fileRef.current.value = "";
+              }}
+              className="text-slate-400 hover:text-red-500 transition-colors p-1"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
         ) : (
-          <div
-            onClick={() => fileRef.current?.click()}
-            className="border-2 border-dashed border-slate-200 rounded-xl p-8 cursor-pointer hover:border-purple-300 hover:bg-purple-50/50 transition-colors text-center"
+          // Use a <label> wrapping the input — works natively on all mobile browsers
+          <label
+            htmlFor="pdf-upload"
+            className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-xl p-8 cursor-pointer hover:border-purple-300 hover:bg-purple-50/50 transition-colors text-center active:bg-purple-50"
           >
-            <Upload className="h-10 w-10 text-slate-300 mx-auto mb-3" />
-            <p className="text-sm font-medium text-slate-600">Click to upload PDF</p>
-            <p className="text-xs text-slate-400 mt-1">PDF only, max 25MB</p>
-          </div>
+            <Upload className="h-10 w-10 text-slate-300 mb-3" />
+            <p className="text-sm font-medium text-slate-600">Tap to select PDF</p>
+            <p className="text-xs text-slate-400 mt-1">PDF only · max 25MB</p>
+          </label>
         )}
-        <input ref={fileRef} type="file" accept="application/pdf" onChange={handlePdf} className="hidden" />
+
+        {/* Input linked to label via id — works on mobile without JS click() */}
+        <input
+          ref={fileRef}
+          id="pdf-upload"
+          type="file"
+          accept="application/pdf,.pdf"
+          onChange={handlePdf}
+          className="sr-only"
+        />
       </div>
 
-      <button type="submit" disabled={isSubmitting || !pdfFile} className="btn-primary w-full py-3 text-base">
-        {isSubmitting ? "Uploading..." : "Upload Notes (+50 karma)"}
+      <button
+        type="submit"
+        disabled={isSubmitting || !pdfFile}
+        className="btn-primary w-full py-3 text-base disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        {isSubmitting ? (
+          <span className="flex items-center justify-center gap-2">
+            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+            </svg>
+            Uploading...
+          </span>
+        ) : (
+          "Upload Notes (+50 karma)"
+        )}
       </button>
     </form>
   );
